@@ -5,38 +5,8 @@ import (
 	"encoding/json"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
-	"log"
 	"os"
 )
-
-func getSysNameDefaultData() map[string]string {
-	SysNameCache := map[string]string{
-		"monitoring":       "容器平台",
-		"cloudtogo-system": "容器平台",
-		"kube-system":      "容器平台",
-		"cps-dev":          "容器平台",
-		"cps-dev1":         "容器平台",
-		"NA":               "NA",
-	}
-	return SysNameCache
-}
-
-func LoadSysNameDefaultConfig() (map[string]string, error) {
-	SysNameConfigFile := "sysname.cfg"
-	config, err := readSysnameConfig(SysNameConfigFile)
-	if err != nil {
-		//读失败 写默认
-		log.Println("写入默认系统名称配置:", err)
-		config = getSysNameDefaultData()
-		err := writeSysnameConfig(SysNameConfigFile, config)
-		if err != nil {
-			log.Println("写入默认系统名称配置失败:", err)
-		}
-		return config, nil
-	}
-
-	return config, nil
-}
 
 func readSysnameConfig(filePath string) (map[string]string, error) {
 	content, err := ioutil.ReadFile(filePath)
@@ -69,12 +39,16 @@ func writeSysnameConfig(filePath string, config map[string]string) error {
 func getStartDefaultConfig() inters.Config {
 	return inters.Config{
 		HTTP: inters.HTTPConfig{
-			Address: "0.0.0.0:9568",
+			Address: "0.0.0.0:80",
 		},
 
 		Database: inters.DBConfig{
-			Master:                 inters.DBNodeConfig{DSN: "root:123456@tcp(127.0.0.1:3306)/alertsnitch"},
-			Replica:                inters.DBNodeConfig{DSN: "root:123456@tcp(127.0.0.2:3306)/alertsnitch"},
+			Master: inters.DBNodeConfig{User: "root",
+				Password: "123456",
+				Addr:     "127.0.0.1:3306"},
+			Replica: inters.DBNodeConfig{User: "root",
+				Password: "123456",
+				Addr:     "127.0.0.2:3306"},
 			MaxIdleConns:           5,
 			MaxOpenConns:           10,
 			MaxConnLifetimeSeconds: 600,

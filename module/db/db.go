@@ -1,8 +1,10 @@
 package db
 
+import "ehmanager/module/datatypes"
+
 type ConnectionArgs struct {
-	MasterDSN              string
-	ReplicaDSN             string
+	Master                 datatypes.DBNodeConfig
+	Replica                datatypes.DBNodeConfig
 	MaxIdleConns           int
 	MaxOpenConns           int
 	MaxConnLifetimeSeconds int

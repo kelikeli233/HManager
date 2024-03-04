@@ -1,4 +1,4 @@
-package ehmanager
+package main
 
 import (
 	"ehmanager/api"
@@ -7,6 +7,7 @@ import (
 	"ehmanager/module/key"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/sirupsen/logrus"
 	"io"
 	"os"
@@ -39,15 +40,17 @@ func main() {
 	//
 	//数据库
 	dbDriver, err := db.Connect(args.Database.Backend, db.ConnectionArgs{
-		MasterDSN:              args.Database.Master.DSN,
-		ReplicaDSN:             args.Database.Replica.DSN,
+		Master:                 args.Database.Master,
+		Replica:                args.Database.Replica,
 		MaxIdleConns:           args.Database.MaxIdleConns,
 		MaxOpenConns:           args.Database.MaxOpenConns,
 		MaxConnLifetimeSeconds: args.Database.MaxConnLifetimeSeconds,
 	})
 	//数据库
 	if err != nil {
+		fmt.Printf("操作数据库失败:%s", err)
 		logrus.Println(err)
+		fmt.Scanln()
 		os.Exit(101)
 	}
 	//syslog

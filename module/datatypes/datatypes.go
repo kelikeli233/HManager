@@ -25,5 +25,12 @@ type DBConfig struct {
 	Backend                string       `yaml:"backend"`
 }
 type DBNodeConfig struct {
-	DSN string `yaml:"DSN"`
+	User     string `yaml:"user"`
+	Password string `yaml:"password"`
+	Addr     string `yaml:"addr"`
+}
+
+type LoginData struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
 }

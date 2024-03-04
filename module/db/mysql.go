@@ -14,12 +14,16 @@ type MySQLDB struct {
 }
 
 func connectMySQL(args ConnectionArgs) (*MySQLDB, error) {
-	if args.MasterDSN == "" {
+
+	MasterDSN := args.Master
+	DSN := fmt.Sprintf("%s:%s@tcp(%s)/hmanager", MasterDSN.User, MasterDSN.Password, MasterDSN.Addr)
+	if MasterDSN.User == "" {
 		return nil, fmt.Errorf("数据库链接为空")
 	}
-	logrus.Debugf("连接MYSQL数据库信息：%s", args.MasterDSN)
+	logrus.Debugf("连接MYSQL数据库信息：%s", DSN)
 
-	connection, err := sql.Open("mysql", args.MasterDSN)
+	connection, err := sql.Open("mysql", DSN)
+
 	if err != nil {
 		//logrus.Debugf("",err)
 		return nil, fmt.Errorf("数据库连接失败：%s", err)
@@ -37,7 +41,7 @@ func connectMySQL(args ConnectionArgs) (*MySQLDB, error) {
 		return nil, err
 	}
 	log.Println("数据库连接成功")
-	logrus.Debugln(args.MasterDSN)
+	logrus.Debugln(DSN)
 	return database, nil
 }
 
